@@ -1,6 +1,8 @@
+Problem: https://adventofcode.com/2021/day/1
+
 **PART A**
 
-Solution: 1466
+My solution: 1466
 
 Notes:
 
@@ -9,7 +11,7 @@ Notes:
 
 **PART B**
 
-Solution: 1491
+My solution: 1491
 
 Notes:
 
