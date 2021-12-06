@@ -1,6 +1,8 @@
+Problem: https://adventofcode.com/2021/day/3
+
 **PART A**
 
-Solutions: 753279, 749376
+My solutions: 753279, 749376
 
 Notes:
 + I was getting the wrong binary to decimal trasnformation because "0^0 = 1" *facepalm*
@@ -8,7 +10,7 @@ Notes:
 
 **PART B**
 
-Solutions: 757182, 3932936
+My solutions: 757182, 3932936
 
 Notes:
 + Now there is no doubt, the streak is over :(
