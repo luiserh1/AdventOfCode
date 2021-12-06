@@ -14,7 +14,9 @@ TXT file containing a number per line
 ### Details
 + First number is not increased (no previous measurement)
 
-### My solutions: 1465, **1466**
+### My solutions:
+
+1465, **1466**
 
 ### Notes
 
@@ -31,7 +33,9 @@ TXT file containing a number per line
 + A **window** contains **three** consecutive numbers
 + Thi offset when changing to the next window is 1 number
 
-### My solution: **1491**
+### My solutions:
+
+**1491**
 
 ### Notes
 
@@ -39,6 +43,7 @@ TXT file containing a number per line
 arguments of the Python mrthods. I was passing the List "data" to a method and then reassigning its value inside the method,
 hoping it would keep this new value after exiting the method. It didn't work as expected. However, updating the variable instead
 of reassigning it did the trick:
-	data = [...] _Vs_ data += [...]
+
+	*data = [...] _Vs_ data += [...]*
 + I've submited the correct answer with the first attempt YAY!
 + The implementation of the B part is generalized, so it can also solve part A by chaging the "windws_size" parameter.
