@@ -75,7 +75,6 @@ def part_b(data):
 	return o2_generator_rating * co2_scrubber_rating, o2_generator_rating_candidates[0], co2_scrubber_rating_candidates[0]
 
 
-
 def main():
 	data = []
 	input_path = "input.txt"
