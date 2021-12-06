@@ -1,8 +1,8 @@
-This time I am going to write down all the solutions I get, even the wrong ones.
+Problem: https://adventofcode.com/2021/day/2
 
 **PART A**
 
-Solutions: 1813801
+My solutions: 1813801
 
 Notes:
 + Another one with just one try!
@@ -10,7 +10,7 @@ Notes:
 
 **PART B**
 
-Solutions: 1960569556
+My solutions: 1960569556
 
 Notes:
 + 3 in a row!
