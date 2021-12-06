@@ -1,4 +1,4 @@
-Problem: https://adventofcode.com/2021/day/1
+Problem: https://adventofcode.com/2021/day/2
 
 **PART A**
 
