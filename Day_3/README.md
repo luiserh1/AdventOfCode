@@ -8,7 +8,7 @@ Notes:
 
 **PART B**
 
-Solutions: 757182, 3932936
+Solutions: 757182, 3932936, 2368632
 
 Notes:
 + Now there is no doubt, the streak is over :(
