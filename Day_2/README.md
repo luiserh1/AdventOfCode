@@ -19,7 +19,9 @@ TXT file containing a word and a number per line
 + + "down": **increases** the **depth** by X
 + + "forward" **increases** the **horizontal position** by X
 
-### My solutions: **1813801**
+### My solutions:
+
+**1813801**
 
 ### Notes
 + Another one with just one try!
@@ -38,7 +40,9 @@ TXT file containing a word and a number per line
 + + + **increases** your **horizontal position** by X
 + + + **increases** your **depth** by the **aim multiplied by X**
 
-### My solutions: **1960569556**
+### My solutions:
+
+**1960569556**
 
 ### Notes
 + 3 in a row!

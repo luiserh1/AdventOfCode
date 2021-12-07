@@ -12,13 +12,15 @@ TXT file containing a binary number per line
 + Get the power consumption of the submarine
 
 ### Details
-+ The compsuption value is the result of multiplying the gamma and epsilon rates
++ The **compsuption** value is the result of **multiplying** the **gamma** and **epsilon** rates
 + Both rates are binary numbers where
-+ + in the gamma rate each bit has the value of the most common bit in the corresponding position
-+ + in the gamma rate each bit has the value of the least common bit in the corresponding position
-+ The solution is a decimal number
++ + in the **gamma** rate each bit has the value of the **most common** bit in the corresponding position
++ + in the **epsilom** rate each bit has the value of the **least common** bit in the corresponding position
++ The **solution** is a **decimal** number
 
-### My solutions: 753279, **749376**
+### My solutions:
+
+753279, **749376**
 
 ### Notes
 + I was getting the wrong binary to decimal trasnformation because "0^0 = 1" *facepalm*
@@ -26,7 +28,15 @@ TXT file containing a binary number per line
 
 ## **PART B**
 
-### Solutions: 757182, 3932936, **2368632**
+### Goal
++ 
+
+### Details
++
+
+### My solutions:
+
+757182, 3932936, **2368632**
 
 ### Notes
 + Now there is no doubt, the streak is over :(
