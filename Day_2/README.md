@@ -15,9 +15,9 @@ TXT file containing a word and a number per line
 + Both of these values **start at 0**
 + There are three possible words in the input
 + Each word implies a change in one of the previous values. Be "word X" the format:
-+ + "up": **decreases** the **depth** by X
-+ + "down": **increases** the **depth** by X
-+ + "forward" **increases** the **horizontal position** by X
+	+ "up": **decreases** the **depth** by X
+	+ "down": **increases** the **depth** by X
+	+ "forward" **increases** the **horizontal position** by X
 
 ### My solutions:
 
@@ -34,11 +34,11 @@ TXT file containing a word and a number per line
 
 ### Details
 + The new variable "aim" is added and the words have different meanings:
-+ + "up": **decreases** the **aim** by X
-+ + "down": **increases** the **aim** by X
-+ + "forward":
-+ + + **increases** your **horizontal position** by X
-+ + + **increases** your **depth** by the **aim multiplied by X**
+	+ "up": **decreases** the **aim** by X
+	+ "down": **increases** the **aim** by X
+	+ "forward":
+		+ **increases** your **horizontal position** by X
+		+ **increases** your **depth** by the **aim multiplied by X**
 
 ### My solutions:
 

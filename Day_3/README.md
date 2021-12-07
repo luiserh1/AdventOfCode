@@ -36,11 +36,11 @@ TXT file containing a binary number per line
 by the CO2 scrubber rating (**CO2_rating**)
 + For both ratings, every number in the input is a valid candidate
 + A loop of discards is applied until only **one number** remains
-+ + Each **iteration** considers just **one bit** of the binary numbers, **starting** from the first bit (**left**)
-+ + The discard criteria varies depending on the rating:
-+ + + O2_rating: The numbers with the **most common** value in the current bit position are kept. In case of tie, keep the ones with "1" in that bit
-+ + + CO2_rating: The numbers with the **least common** value in the current bit position are kept. In case of tie, keep the ones with "0" in that bit
-+ + When an iteration ends the **next** considered bit is the one **to the right**
+	+ Each **iteration** considers just **one bit** of the binary numbers, **starting** from the first bit (**left**)
+	+ The discard criteria varies depending on the rating:
+		+ O2_rating: The numbers with the **most common** value in the current bit position are kept. In case of tie, keep the ones with "1" in that bit
+		+ CO2_rating: The numbers with the **least common** value in the current bit position are kept. In case of tie, keep the ones with "0" in that bit
+	+ When an iteration ends the **next** considered bit is the one **to the right**
 
 ### My solutions:
 
@@ -52,11 +52,12 @@ by the CO2 scrubber rating (**CO2_rating**)
 + I made some mistakes and trying to fix them I made some more
 + Even the test has been implemented for this oen
 + Some of the mistakes:
-+ + "/" returns a float, "//" returns an integer (newbie)
-+ + if most_common_value > 1:
-		o2_rating_candidates = [candidate for candidate in o2_rating_candidates if candidate[i] == 1]
-	else:
-		o2_rating_candidates = [candidate for candidate in o2_rating_candidates if candidate[i] == most_common_value]
+	+ "/" returns a float, "//" returns an integer (newbie)
+	+
+if most_common_value > 1:
+	o2_rating_candidates = [candidate for candidate in o2_rating_candidates if candidate[i] == 1]
+else:
+	o2_rating_candidates = [candidate for candidate in o2_rating_candidates if candidate[i] == most_common_value]
 
 and
 
