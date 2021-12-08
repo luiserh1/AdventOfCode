@@ -50,3 +50,6 @@ when I must have waited for it to end
 + I leave it on standby, I can't figure out why isn't working. I've checked that
 the loser is correct and that when it ends, the correct numbers are used on the calculation.
 I'll come back when I got a gasp of what's happening
++ The moment has come. The thing is, the way I coded the algoryth it will always
+mark every board where a number is present, even if they already won, resulting in
+duplicated tries. Interestingly enough, the loser board hasn't changed.
