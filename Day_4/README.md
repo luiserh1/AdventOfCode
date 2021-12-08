@@ -22,7 +22,7 @@ numbers represents the order in which the numbers are pulled out.
 the **sum** of all the numbers in the board that **haven't been pulled out**
 
 ### My solutions:
-2745
+**2745**
 
 ### Notes
 + Surprisingly, the most troublesome part has been dealing with the input
@@ -34,13 +34,19 @@ the **sum** of all the numbers in the board that **haven't been pulled out**
 ## **PART B**
 
 ### Goal
-+ 
++ Get the score of the las winning board
 
 ### Details
-+ 
++ Same rules to declare a winner
 
 ### My solutions:
-
+24480
 
 ### Notes
-+ 
++ The "reverse()" function of a list reverses the list, but returns "None"
++ The algotythm passed the test, but gave the wrong answer. Yikes
++ I made a mistake where I was calculating the score after the loser was decided,
+when I must have waited for it to end
++ I leave it on standby, I can't figure out why isn't working. I've checked that
+the loser is correct and that when it ends, the correct numbers are used on the calculation.
+I'll come back when I got a gasp of what's happening
