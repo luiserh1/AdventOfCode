@@ -53,19 +53,7 @@ by the CO2 scrubber rating (**CO2_rating**)
 + Even the test has been implemented for this oen
 + Some of the mistakes:
 	+ "/" returns a float, "//" returns an integer (newbie)
-	+
-if most_common_value > 1:
-	o2_rating_candidates = [candidate for candidate in o2_rating_candidates if candidate[i] == 1]
-else:
-	o2_rating_candidates = [candidate for candidate in o2_rating_candidates if candidate[i] == most_common_value]
-
-and
-
-o2_rating_candidates = [candidate for candidate in o2_rating_candidates if candidate[i] == most_common_value or
-
-are not equivalent
-
+	+ Bad use of list comprehensions. Problems with "if"s with several comparissons
 + Trying to generalize the code too much has turned against me
 
 + In addition to the logical errors, I misunderstood the discard criteria at first
-               
