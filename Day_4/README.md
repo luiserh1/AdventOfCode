@@ -40,7 +40,7 @@ the **sum** of all the numbers in the board that **haven't been pulled out**
 + Same rules to declare a winner
 
 ### My solutions:
-24480
+**24480**
 
 ### Notes
 + The "reverse()" function of a list reverses the list, but returns "None"
