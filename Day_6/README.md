@@ -18,7 +18,7 @@ lanternfish and the days left until they generate anothe one
 	+ a new 8 is added to the list, representing a new lanternfish
 
 ### My solutions:
-375482
+**375482**
 
 ### Notes
 + Did someone said, first try? YEaH
@@ -26,13 +26,17 @@ lanternfish and the days left until they generate anothe one
 ## **PART B**
 
 ### Goal
-+ 
++ Same goal, but 256 days this time
 
 ### Details
-+ 
+
 
 ### My solutions:
-10312, **22335**
+**1689540415957**
 
 ### Notes
-+ 
++ The challenge here is to design a code that does the same that part a,
+but way more efficiently
++ It has been challenging
++ But first try once more, hehe!
++ The hardest part has been managing the indices, I drew it twice
