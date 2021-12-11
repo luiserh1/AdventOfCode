@@ -33,13 +33,19 @@ but I keep making the mistake over and ove again
 ## **PART B**
 
 ### Goal
-+ 
++ Same goal, but now the diagonals also count
 
 ### Details
-+ 
++ Only diagonals forming 45ª with the axis
+	+ Ej.: An entry like 1,1 -> 3,3 covers points 1,1, 2,2, and 3,3
 
 ### My solutions:
-
+10312, **22335**
 
 ### Notes
-+ 
++ Trying to generalize this code has been troublesome
++ I made a mistake where assuming I had to change a number of
+points equivalent to the length of the segment. But the distance might be
+negative. I fixed it with the "abs" function
++ TODO: Figure out why I had to manually increment the size of the grid in the
+X axis to avoid ONE segment of exceding it
