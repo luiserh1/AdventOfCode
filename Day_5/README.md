@@ -49,3 +49,4 @@ points equivalent to the length of the segment. But the distance might be
 negative. I fixed it with the "abs" function
 + TODO: Figure out why I had to manually increment the size of the grid in the
 X axis to avoid ONE segment of exceding it
++ Submitted right with the first try, btw
