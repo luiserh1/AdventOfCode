@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -70,28 +71,38 @@ int main()
                          // PART2_TEST_DATA2;
 
     int numMoves = strlen(inputData);
-    int finalFloor, movesToReachBasement;
+    int finalFloor1, movesToReachBasement1;
 
     clock_t startTimePart1 = clock();
-
-    finalFloor = solvePart1(inputData, numMoves);
-    printf("After %d moves the floor Santa Claus arrives to is: %d\n", 
-        numMoves, finalFloor);
-    
+    finalFloor1 = solvePart1(inputData, numMoves);
     clock_t endTimePart1 = clock();
+
     clock_t startTimePart2 = clock();
-
-    movesToReachBasement = solvePart2(inputData, numMoves);
-    printf("The position of the character that causes Santa to first enter the basement is: %d\n",
-        movesToReachBasement);
-
+    movesToReachBasement1 = solvePart2(inputData, numMoves);
     clock_t endTimePart2 = clock();
+
+    int finalFloor2, movesToReachBasement2;
     clock_t startTimeBothParts = clock();
-
-    solveBothParts(inputData, numMoves, &finalFloor, &movesToReachBasement);
-
+    solveBothParts(inputData, numMoves, &finalFloor2, &movesToReachBasement2);
     clock_t endTimeBothParts = clock();
+    assert(finalFloor1 == finalFloor2);
+    assert(movesToReachBasement1 == movesToReachBasement2);
+
+    printf("After %d moves the floor Santa Claus arrives to is: %d\n", 
+        numMoves, finalFloor1);
+    printf("The position of the character that causes Santa to first enter the basement is: %d\n",
+        movesToReachBasement1);
+
+    printf("================================================================================\n");
     
+    double elapsedTimePart1 = (double)(endTimePart1 - startTimePart1) / CLOCKS_PER_SEC;
+    double elapsedTimePart2 = (double)(endTimePart2 - startTimePart2) / CLOCKS_PER_SEC;
+    double elapsedTimeBothParts = (double)(endTimeBothParts - startTimeBothParts) / CLOCKS_PER_SEC;
+    printf("Time spent solving part1 individually is: %f\n", elapsedTimePart1);
+    printf("Time spent solving part2 individually is: %f\n", elapsedTimePart2);
+    printf("Time spent solving both parts separately is: %f\n", elapsedTimePart1 + elapsedTimePart2);
+    printf("Time spent solving both parts simultaniously is: %f\n", elapsedTimeBothParts);
+
     return 0;
 }
     
