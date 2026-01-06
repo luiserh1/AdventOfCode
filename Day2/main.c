@@ -13,8 +13,8 @@ typedef struct {
 	unsigned int l, w, h;
 } Present;
 
-void printPresent(Present *p) {
-	printf("%d%c%d%c%d\n", p->l, MAGNITUDE_SEPARATOR, p->w, MAGNITUDE_SEPARATOR, p->h);
+void presentToString(Present *p, char* str) {
+	sprintf(str, "%d%c%d%c%d", p->l, MAGNITUDE_SEPARATOR, p->w, MAGNITUDE_SEPARATOR, p->h);
 }
 
 /* Expected string format
@@ -78,14 +78,14 @@ static inline unsigned int computeRquieredPaper(Present *p) {
 
 // PART2; The formula is: min(2*(l+w),2*(w+h),2*(h+l)) + l*w*h
 static inline unsigned int computeRequieredRibbon(Present *p) {
-	unsigned int lwSideArea = 2 * (p->l + p-> w);
-	unsigned int whSideArea = 2 * (p->w + p->h);
-	unsigned int hlSideArea = 2 * (p->h + p->l);
-	unsigned int minPerimeter = lwSideArea;
-	if (whSideArea < minPerimeter)
-		minPerimeter = lwSideArea;
-	if (hlSideArea < minPerimeter)
-		minPerimeter = hlSideArea;
+	unsigned int lwSidePerimeter = 2 * (p->l + p-> w);
+	unsigned int whSidePerimeter = 2 * (p->w + p->h);
+	unsigned int hlSidePerimeter = 2 * (p->h + p->l);
+	unsigned int minPerimeter = lwSidePerimeter;
+	if (whSidePerimeter < minPerimeter)
+		minPerimeter = whSidePerimeter;
+	if (hlSidePerimeter < minPerimeter)
+		minPerimeter = hlSidePerimeter;
 	return minPerimeter + p->w * p->h * p->l;
 }
 
@@ -94,13 +94,8 @@ int main()
 	unsigned int totalPaperArea = 0;
 	unsigned int totalRibbonLength = 0;
 
-	//int numPresents = 1;
 	int numPresents = NUM_PRESENTS;
 	Present presents[numPresents];
-	//const char* PART1_TEST_DATA1 = "2x3x4";    // Expected paper is 58 square feet. Expected ribbon is 34 feet
-	//const char* PART1_TEST_DATA2 = "1x1x10";   // Expected paper is 43 square feet. Expected ribbon is 14 feet
-	//presents[0] = parsePresent(PART1_TEST_DATA1);
-	//presents[0] = parsePresent(PART1_TEST_DATA2);
 
 	FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
     if (!fp) {
@@ -119,11 +114,17 @@ int main()
     fclose(fp);
 
 	for (int i = 0; i < numPresents; i++) {
-		unsigned int presentAreaRequired = computeRquieredPaper(&presents[i]);
+		Present *present = &presents[i];
+
+		unsigned int presentAreaRequired = computeRquieredPaper(present);
 		totalPaperArea += presentAreaRequired;
 
-		unsigned int presentRibbonRequired = computeRequieredRibbon(&presents[i]);
+		unsigned int presentRibbonRequired = computeRequieredRibbon(present);
 		totalRibbonLength += presentRibbonRequired;
+
+		char presentStr[MAX_CHARS_PRESENT];
+		presentToString(present, presentStr);
+		printf("[%s]: %d square feet of paper; %d feet of ribbon\n", presentStr, presentAreaRequired, presentRibbonRequired);
 	}
 
 	printf("The elves should order %d square feet of wrapping paper\n", totalPaperArea);
