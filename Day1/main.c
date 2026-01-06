@@ -84,7 +84,6 @@ int main()
     int finalFloor1, movesToReachBasement1;
     int finalFloor2, movesToReachBasement2;
 
-
     startTimePart1 = clock();
     finalFloor1 = solvePart1(inputData, numMoves);
     endTimePart1 = clock();
