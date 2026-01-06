@@ -9,8 +9,7 @@
 #define ASCII_TO_UNIT(X) ((int)X - (int)'0')
 
 // Units are feet
-typedef struct
-{
+typedef struct {
 	unsigned int l, w, h;
 } Present;
 
@@ -60,7 +59,7 @@ Present parsePresent(const char* presentStr) {
 	return parsedPresent;
 }
 
-// The formula is: 2*l*w + 2*w*h + 2*h*l + min(l*w,w*h,h*l)
+// PART1; The formula is: 2*l*w + 2*w*h + 2*h*l + min(l*w,w*h,h*l)
 static inline unsigned int computeRquieredPaper(Present *p) {
 	unsigned int lwSideArea = p->l * p-> w;
 	unsigned int whSideArea = p->w * p->h;
@@ -76,40 +75,58 @@ static inline unsigned int computeRquieredPaper(Present *p) {
 		   minArea;
 }
 
+
+// PART2; The formula is: min(2*(l+w),2*(w+h),2*(h+l)) + l*w*h
+static inline unsigned int computeRequieredRibbon(Present *p) {
+	unsigned int lwSideArea = 2 * (p->l + p-> w);
+	unsigned int whSideArea = 2 * (p->w + p->h);
+	unsigned int hlSideArea = 2 * (p->h + p->l);
+	unsigned int minPerimeter = lwSideArea;
+	if (whSideArea < minPerimeter)
+		minPerimeter = lwSideArea;
+	if (hlSideArea < minPerimeter)
+		minPerimeter = hlSideArea;
+	return minPerimeter + p->w * p->h * p->l;
+}
+
 int main()
 {
 	unsigned int totalPaperArea = 0;
+	unsigned int totalRibbonLength = 0;
 
-	int numPresents = NUM_PRESENTS;
-	//int numPresents = 2;
+	//int numPresents = NUM_PRESENTS;
+	int numPresents = 1;
 	Present presents[numPresents];
-	//const char* PART1_TEST_DATA1 = "2x3x4";    // Expected area of 58
-	//const char* PART1_TEST_DATA2 = "1x1x10";   // Expected area of 43
+	//const char* PART1_TEST_DATA1 = "2x3x4";    // Expected paper is 58 square feet. Expected ribbon is 34 feet
+	const char* PART1_TEST_DATA2 = "1x1x10";   // Expected paper is 43 square feet. Expected ribbon is 14 feet
 	//presents[0] = parsePresent(PART1_TEST_DATA1);
-	//presents[1] = parsePresent(PART1_TEST_DATA2);
+	presents[0] = parsePresent(PART1_TEST_DATA2);
 
-	FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
-    if (!fp) {
-        perror("File opening failed");
-        return -1;
-    }
-    for (int i = 0; i < NUM_PRESENTS; i++) {
-    	char buffer[MAX_CHARS_PRESENT];
-    	if (!fgets(buffer, MAX_CHARS_PRESENT, fp)) {
-        	perror("File reading failed");
-   			fclose(fp);
-        	return -2;
-    	}
-    	presents[i] = parsePresent(buffer);
-    }
-    
-    fclose(fp);
+	//FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
+    //if (!fp) {
+    //    perror("File opening failed");
+    //    return -1;
+    //}
+    //for (int i = 0; i < NUM_PRESENTS; i++) {
+    //	char buffer[MAX_CHARS_PRESENT];
+    //	if (!fgets(buffer, MAX_CHARS_PRESENT, fp)) {
+    //    	perror("File reading failed");
+   	//		fclose(fp);
+    //    	return -2;
+    //	}
+    //	presents[i] = parsePresent(buffer);
+    //}
+    //fclose(fp);
 
-	for (int i = 0; i < NUM_PRESENTS; i++) {
+	for (int i = 0; i < numPresents; i++) {
 		unsigned int presentAreaRequired = computeRquieredPaper(&presents[i]);
 		totalPaperArea += presentAreaRequired;
+
+		unsigned int presentRibbonRequired = computeRequieredRibbon(&presents[i]);
+		totalRibbonLength += presentRibbonRequired;
 	}
 
 	printf("The elves should order %d square feet of wrapping paper\n", totalPaperArea);
+	printf("The elves should order %d feet of ribbon\n", totalRibbonLength);
 	return 0;
 }
