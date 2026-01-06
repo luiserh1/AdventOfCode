@@ -61,6 +61,11 @@ void solveBothParts(const char *moves, int numMoves, int *finalFloor, int *moves
 
 int main()
 {
+    clock_t startTimePart1, endTimePart1,
+            startTimePart2, endTimePart2,
+            startTimeBothParts, endTimeBothParts;
+    double elapsedTimePart1, elapsedTimePart2, elapsedTimeBothParts;
+    
     char inputData[INPUT_DATA_CHARACTERS_NUM+1];
 
     FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
@@ -79,10 +84,6 @@ int main()
     int finalFloor1, movesToReachBasement1;
     int finalFloor2, movesToReachBasement2;
 
-    clock_t startTimePart1, endTimePart1,
-            startTimePart2, endTimePart2,
-            startTimeBothParts, endTimeBothParts;
-    double elapsedTimePart1, elapsedTimePart2, elapsedTimeBothParts;
 
     startTimePart1 = clock();
     finalFloor1 = solvePart1(inputData, numMoves);
