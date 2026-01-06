@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#define NUM_PRESENTS 1000
+#define MAX_CHARS_PRESENT 12
+#define MAGNITUDE_SEPARATOR 'x'
+#define INPUT_DATA_FILENAME "./data.txt"
+
 #define ASCII_TO_UNIT(X) ((int)X - (int)'0')
-
-const char MAGNITUDE_SEPARATOR = 'x';
-
-const char* PART1_TEST_DATA1 = "2x3x4";    // Expected area of 58
-const char* PART1_TEST_DATA2 = "1x1x10";   // Expected area of 43
 
 // Units are feet
 typedef struct
@@ -28,7 +28,7 @@ void printPresent(Present *p) {
 Present parsePresent(const char* presentStr) {
 	Present parsedPresent = { .l = 0, .w = 0, .h = 0 };
 	char const* pStr = presentStr;
-	while (*pStr != '\0')
+	while (*pStr != '\0' && *pStr != '\n')
 		pStr++;
 	pStr--;
 
@@ -78,12 +78,38 @@ static inline unsigned int computeRquieredPaper(Present *p) {
 
 int main()
 {
-	unsigned int paperArea = 0;
+	unsigned int totalPaperArea = 0;
 
-	Present testPresent = parsePresent(PART1_TEST_DATA2);
-	printPresent(&testPresent);
-	paperArea = computeRquieredPaper(&testPresent);
+	int numPresents = NUM_PRESENTS;
+	//int numPresents = 2;
+	Present presents[numPresents];
+	//const char* PART1_TEST_DATA1 = "2x3x4";    // Expected area of 58
+	//const char* PART1_TEST_DATA2 = "1x1x10";   // Expected area of 43
+	//presents[0] = parsePresent(PART1_TEST_DATA1);
+	//presents[1] = parsePresent(PART1_TEST_DATA2);
 
-	printf("The elves should order %d square feet of wrapping paper\n", paperArea);
+	FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
+    if (!fp) {
+        perror("File opening failed");
+        return -1;
+    }
+    for (int i = 0; i < NUM_PRESENTS; i++) {
+    	char buffer[MAX_CHARS_PRESENT];
+    	if (!fgets(buffer, MAX_CHARS_PRESENT, fp)) {
+        	perror("File reading failed");
+   			fclose(fp);
+        	return -2;
+    	}
+    	presents[i] = parsePresent(buffer);
+    }
+    
+    fclose(fp);
+
+	for (int i = 0; i < NUM_PRESENTS; i++) {
+		unsigned int presentAreaRequired = computeRquieredPaper(&presents[i]);
+		totalPaperArea += presentAreaRequired;
+	}
+
+	printf("The elves should order %d square feet of wrapping paper\n", totalPaperArea);
 	return 0;
 }
