@@ -94,29 +94,29 @@ int main()
 	unsigned int totalPaperArea = 0;
 	unsigned int totalRibbonLength = 0;
 
-	//int numPresents = NUM_PRESENTS;
-	int numPresents = 1;
+	//int numPresents = 1;
+	int numPresents = NUM_PRESENTS;
 	Present presents[numPresents];
 	//const char* PART1_TEST_DATA1 = "2x3x4";    // Expected paper is 58 square feet. Expected ribbon is 34 feet
-	const char* PART1_TEST_DATA2 = "1x1x10";   // Expected paper is 43 square feet. Expected ribbon is 14 feet
+	//const char* PART1_TEST_DATA2 = "1x1x10";   // Expected paper is 43 square feet. Expected ribbon is 14 feet
 	//presents[0] = parsePresent(PART1_TEST_DATA1);
-	presents[0] = parsePresent(PART1_TEST_DATA2);
+	//presents[0] = parsePresent(PART1_TEST_DATA2);
 
-	//FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
-    //if (!fp) {
-    //    perror("File opening failed");
-    //    return -1;
-    //}
-    //for (int i = 0; i < NUM_PRESENTS; i++) {
-    //	char buffer[MAX_CHARS_PRESENT];
-    //	if (!fgets(buffer, MAX_CHARS_PRESENT, fp)) {
-    //    	perror("File reading failed");
-   	//		fclose(fp);
-    //    	return -2;
-    //	}
-    //	presents[i] = parsePresent(buffer);
-    //}
-    //fclose(fp);
+	FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
+    if (!fp) {
+        perror("File opening failed");
+        return -1;
+    }
+    for (int i = 0; i < NUM_PRESENTS; i++) {
+    	char buffer[MAX_CHARS_PRESENT];
+    	if (!fgets(buffer, MAX_CHARS_PRESENT, fp)) {
+        	perror("File reading failed");
+   			fclose(fp);
+        	return -2;
+    	}
+    	presents[i] = parsePresent(buffer);
+    }
+    fclose(fp);
 
 	for (int i = 0; i < numPresents; i++) {
 		unsigned int presentAreaRequired = computeRquieredPaper(&presents[i]);
