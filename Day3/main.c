@@ -2,13 +2,17 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include <time.h>
+
 #define NORTH_CHARACTER '^'
 #define SOUTH_CHARACTER 'v'
 #define WEST_CHARACTER '<'
 #define EAST_CHARACTER '>'
 
 #define INPUT_DATA_CHARACTERS_NUM 8193
+//#ifndef NUM_SANTAS 
 #define NUM_SANTAS 2
+//#endif
 #define INPUT_DATA_FILENAME "./data.txt"
 
 typedef struct {
@@ -118,6 +122,10 @@ int main()
 	}
 	Neightbourhood hood = { .width=0, .height=0, .xOffset=0, .yOffset=0,
 		.mostDelivered={ .x=0, .y=0 }, .mostDeliveries=0, .numDeliveredHouses=0 };
+	clock_t startParsingTime, endParsingTime,
+			startTraversingTime, endTraversingTime,
+			startSolvingTime, endSolvingTime;
+	clock_t elapsedParsingTime, elapsedTraversingTime, elapsedSolvingTime;
 
 	// Data file loading
 	FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
@@ -143,26 +151,41 @@ int main()
     fclose(fp);
 
     // Data parsing
+    startParsingTime = clock();
 	Cords minCoords = { .x = 0, .y = 0 };
 	Cords maxCoords = { .x = 0, .y = 0 };
 	for (int i = 0; i < NUM_SANTAS; i++) {
 		parsePath(&santaArmy[i], &minCoords, &maxCoords);
 	}
+	endParsingTime = clock();
 
 	// Traversing
+	startTraversingTime = clock();
 	delimitNeightbourhoodArea(&hood, minCoords, maxCoords);
 	for (int i = 0; i < NUM_SANTAS; i++) {
 		traverseNeightbourhood(&hood, santaArmy[i].path, movesPerSanta);
 	}
+	endTraversingTime = clock();
 
 	// Computing result
+	startSolvingTime = clock();
 	computeNeightbourhoodStats(&hood);
+	endSolvingTime = clock();
 
 	// Pint result
 	printf("After %d moves by %d Santas presents have been delivered to %d houses and the house with the most"
 		   " deliveries is at [%d, %d] with %d deliveries\n",
 		   movesPerSanta, NUM_SANTAS, hood.numDeliveredHouses, hood.mostDelivered.x,
 		   hood.mostDelivered.y, hood.mostDeliveries);
+
+    printf("================================================================================\n");
+
+    elapsedParsingTime = endParsingTime - startParsingTime;
+    elapsedTraversingTime = endTraversingTime - startTraversingTime;
+    elapsedSolvingTime = endSolvingTime - startSolvingTime;
+    printf("Time spent parsing: %lums\n", elapsedParsingTime);
+    printf("Time spent traversing: %lums\n", elapsedTraversingTime);
+    printf("Time spent solving: %lums\n", elapsedSolvingTime);
     
     // Clean up
 	for (int i = 0; i < NUM_SANTAS; i++) {
