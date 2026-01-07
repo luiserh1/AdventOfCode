@@ -7,7 +7,8 @@
 #define WEST_CHARACTER '<'
 #define EAST_CHARACTER '>'
 
-#define NUM_MOVES 8193
+#define INPUT_DATA_CHARACTERS_NUM 8193
+#define INPUT_DATA_FILENAME "./data.txt"
 
 typedef struct {
 	int x, y; 
@@ -15,7 +16,12 @@ typedef struct {
 
 typedef struct {
 	Cords pos;
-	Cords path[NUM_MOVES];
+	Cords *path;
+
+	// Computable stats
+	Cords mostDelivered;
+	uint32_t mostDeliveries;
+	uint32_t numDeliveredHouses;
 } SantaClaus;
 
 // Assuming minCoords and maxCoords are initiallized to { .x=0, .y=0 }
@@ -52,10 +58,8 @@ void fillPath(SantaClaus *santa, const char *pathStr, Cords *minCoords, Cords *m
 	}
 }
 
-// Part1. Returns the amount of times the most visited house is reached
-uint32_t getMostVisitedHouse(Cords *path, int numMoves, Cords minCoords,
-	Cords maxCoords, Cords *mostVisited)
-{
+// Part1. Returns the amount of times the most delivered house is reached
+void computeSantaStats(SantaClaus *santa, int numMoves, Cords minCoords,	Cords maxCoords) {
 	int neightbourhoodWidth = maxCoords.x - minCoords.x + 1;
 	int neightbourhoodHeight = maxCoords.y - minCoords.y + 1;
 
@@ -65,47 +69,74 @@ uint32_t getMostVisitedHouse(Cords *path, int numMoves, Cords minCoords,
 	// Row major
 	uint32_t *neightbourhoodGrid = calloc(neightbourhoodWidth * neightbourhoodHeight, sizeof(uint32_t));
 
-	// Initial house has the visits count set to 1
+	// Initial house has the delivery count set to 1
 	neightbourhoodGrid[xOffset * neightbourhoodWidth + yOffset] += 1;
 	for (int i = 0; i < numMoves; i++) {
-		int x = path[i].x + xOffset;
-		int y = path[i].y + yOffset;
-		neightbourhoodGrid[x * neightbourhoodWidth + y] += 1;
+		int x = santa->path[i].x + xOffset;
+		int y = santa->path[i].y + yOffset;
+		neightbourhoodGrid[x * neightbourhoodWidth + y]++;
 	}
 
-	uint32_t mostVisits = 0;
+	santa->mostDeliveries = 0;
+	santa->numDeliveredHouses = 0;
 	for (int i = 0; i < neightbourhoodWidth; i++) {
-		for (int j = 0; j < neightbourhoodWidth; j++) {
-			if (neightbourhoodGrid[i * neightbourhoodWidth + j] > mostVisits) {
-				mostVisits = neightbourhoodGrid[i * neightbourhoodWidth + j];
-				mostVisited->x = i;
-				mostVisited->y = j;
+		for (int j = 0; j < neightbourhoodHeight; j++) {
+			uint32_t presentsDelivered = neightbourhoodGrid[i * neightbourhoodWidth + j];
+			if (!presentsDelivered)
+				continue;
+
+			santa->numDeliveredHouses++;
+			if (presentsDelivered > santa->mostDeliveries) {
+				santa->mostDeliveries = presentsDelivered;
+				santa->mostDelivered.x = i;
+				santa->mostDelivered.y = j;
 			}
 		}
 	}
 
 	// Debug printing the matrix
-	for (int i = 0; i < neightbourhoodWidth; i++) {
-		for (int j = 0; j < neightbourhoodWidth; j++) {
-			printf(" %d", neightbourhoodGrid[i * neightbourhoodWidth + j]);
-		}
-		printf("\n");
-	}
-
+	//for (int i = 0; i < neightbourhoodWidth; i++) {
+	//	for (int j = 0; j < neightbourhoodHeight; j++) {
+	//		printf(" %d", neightbourhoodGrid[i * neightbourhoodWidth + j]);
+	//	}
+	//	printf("\n");
+	//}
 
 	free(neightbourhoodGrid);
-	return mostVisits;
 }
 
 int main()
 {
-	SantaClaus santa = { .pos = { .x = 0, .y = 0 } };
+	int numMoves = INPUT_DATA_CHARACTERS_NUM;
+	//int numMoves = 4;
+	//const char *pathStr = "^>v<";
+	SantaClaus santa = { .pos = { .x = 0, .y = 0 }, .mostDeliveries = 0,
+		                 .mostDelivered = { .x = 0, .y = 0 }, .numDeliveredHouses = 0 };
+	santa.path = calloc(INPUT_DATA_CHARACTERS_NUM, sizeof(Cords));
+
+	FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
+    if (!fp) {
+        perror("File opening failed");
+        free(santa.path);
+        return -1;
+    }
+	char pathStr[INPUT_DATA_CHARACTERS_NUM + 1];
+    if (!fgets(pathStr, INPUT_DATA_CHARACTERS_NUM+1, fp)) {
+        perror("File reading failed");
+        free(santa.path);
+        fclose(fp);
+        return -2;
+    }
+    fclose(fp);
+
 	Cords minCoords = { .x = 0, .y = 0 };
 	Cords maxCoords = { .x = 0, .y = 0 };
-	const char *pathStr = "^>v<";
 	fillPath(&santa, pathStr, &minCoords, &maxCoords);
-	Cords mostVisited;
-	uint32_t mostVisites = getMostVisitedHouse(&santa.path, 4, minCoords, maxCoords, &mostVisited);
-	printf("Most visited house at [%d, %d] with %d visites\n", mostVisited.x, mostVisited.y, mostVisites);
+	computeSantaStats(&santa, numMoves, minCoords, maxCoords);
+	printf("After %d moves presents have been delivered to %d houses and the house with the most"
+		   " deliveries is at [%d, %d] with %d deliveries\n",
+		   numMoves, santa.numDeliveredHouses, santa.mostDelivered.x, santa.mostDelivered.y, santa.mostDeliveries);
+    
+    free(santa.path);
 	return 0;
 }
