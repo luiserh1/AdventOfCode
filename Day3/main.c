@@ -8,6 +8,7 @@
 #define EAST_CHARACTER '>'
 
 #define INPUT_DATA_CHARACTERS_NUM 8193
+#define NUM_SANTAS 2
 #define INPUT_DATA_FILENAME "./data.txt"
 
 typedef struct {
@@ -16,19 +17,26 @@ typedef struct {
 
 typedef struct {
 	Cords pos;
+	char  *pathStr;
 	Cords *path;
+} SantaClaus;
 
-	// Computable stats
+typedef struct {
+	// To be filled from SantasClaus path
+	uint32_t *deliveriesGrid;
+
+	// To be computed from deliveriesGrid
+	int width, height;
+	int xOffset, yOffset;
 	Cords mostDelivered;
 	uint32_t mostDeliveries;
 	uint32_t numDeliveredHouses;
-} SantaClaus;
+} Neightbourhood;
 
-// Assuming minCoords and maxCoords are initiallized to { .x=0, .y=0 }
-void fillPath(SantaClaus *santa, const char *pathStr, Cords *minCoords, Cords *maxCoords) {
+void parsePath(SantaClaus *santa, Cords *minCoords, Cords *maxCoords) {
 	int i = 0;
-	while (pathStr[i] != '\0') {
-		switch (pathStr[i]) {
+	while (santa->pathStr[i] != '\0') {
+		switch (santa->pathStr[i]) {
 		case NORTH_CHARACTER:
 			santa->pos.y++;
 			if (santa->pos.y > maxCoords->y)
@@ -58,85 +66,109 @@ void fillPath(SantaClaus *santa, const char *pathStr, Cords *minCoords, Cords *m
 	}
 }
 
-// Part1. Returns the amount of times the most delivered house is reached
-void computeSantaStats(SantaClaus *santa, int numMoves, Cords minCoords,	Cords maxCoords) {
-	int neightbourhoodWidth = maxCoords.x - minCoords.x + 1;
-	int neightbourhoodHeight = maxCoords.y - minCoords.y + 1;
+void delimitNeightbourhoodArea(Neightbourhood *hood, Cords minCoords, Cords maxCoords) {
+	hood->width = maxCoords.x - minCoords.x + 1;
+	hood->height = maxCoords.y - minCoords.y + 1;
 
-	int xOffset = -minCoords.x;
-	int yOffset = -minCoords.y;
+	hood->xOffset = -minCoords.x;
+	hood->yOffset = -minCoords.y;
 
-	// Row major
-	uint32_t *neightbourhoodGrid = calloc(neightbourhoodWidth * neightbourhoodHeight, sizeof(uint32_t));
+	hood->deliveriesGrid = calloc(hood->width * hood->height, sizeof(uint32_t));
+}
 
-	// Initial house has the delivery count set to 1
-	neightbourhoodGrid[xOffset * neightbourhoodWidth + yOffset] += 1;
+void traverseNeightbourhood(Neightbourhood *hood, Cords *path, int numMoves) {
+	// Starting house has the delivery count increased by 1
+	hood->deliveriesGrid[hood->xOffset * hood->width + hood->yOffset] += 1;
 	for (int i = 0; i < numMoves; i++) {
-		int x = santa->path[i].x + xOffset;
-		int y = santa->path[i].y + yOffset;
-		neightbourhoodGrid[x * neightbourhoodWidth + y]++;
+		int x = path[i].x + hood->xOffset;
+		int y = path[i].y + hood->yOffset;
+		hood->deliveriesGrid[x * hood->width + y]++;
 	}
+}
 
-	santa->mostDeliveries = 0;
-	santa->numDeliveredHouses = 0;
-	for (int i = 0; i < neightbourhoodWidth; i++) {
-		for (int j = 0; j < neightbourhoodHeight; j++) {
-			uint32_t presentsDelivered = neightbourhoodGrid[i * neightbourhoodWidth + j];
+void computeNeightbourhoodStats(Neightbourhood *hood) {
+	hood->mostDeliveries = 0;
+	hood->numDeliveredHouses = 0;
+
+	for (int i = 0; i < hood->width; i++) {
+		for (int j = 0; j < hood->height; j++) {
+			uint32_t presentsDelivered = hood->deliveriesGrid[i * hood->width + j];
 			if (!presentsDelivered)
 				continue;
 
-			santa->numDeliveredHouses++;
-			if (presentsDelivered > santa->mostDeliveries) {
-				santa->mostDeliveries = presentsDelivered;
-				santa->mostDelivered.x = i;
-				santa->mostDelivered.y = j;
+			hood->numDeliveredHouses++;
+			if (presentsDelivered > hood->mostDeliveries) {
+				hood->mostDeliveries = presentsDelivered;
+				hood->mostDelivered.x = i;
+				hood->mostDelivered.y = j;
 			}
 		}
 	}
-
-	// Debug printing the matrix
-	//for (int i = 0; i < neightbourhoodWidth; i++) {
-	//	for (int j = 0; j < neightbourhoodHeight; j++) {
-	//		printf(" %d", neightbourhoodGrid[i * neightbourhoodWidth + j]);
-	//	}
-	//	printf("\n");
-	//}
-
-	free(neightbourhoodGrid);
 }
 
 int main()
 {
-	int numMoves = INPUT_DATA_CHARACTERS_NUM;
-	//int numMoves = 4;
-	//const char *pathStr = "^>v<";
-	SantaClaus santa = { .pos = { .x = 0, .y = 0 }, .mostDeliveries = 0,
-		                 .mostDelivered = { .x = 0, .y = 0 }, .numDeliveredHouses = 0 };
-	santa.path = calloc(INPUT_DATA_CHARACTERS_NUM, sizeof(Cords));
+	// Init
+	SantaClaus santaArmy[NUM_SANTAS];
+	int movesPerSanta = INPUT_DATA_CHARACTERS_NUM / NUM_SANTAS;
+	for (int i = 0; i < NUM_SANTAS; i++) {
+		santaArmy[i].pos = (Cords){ .x=0, .y=0 };
+		santaArmy[i].path = calloc(movesPerSanta, sizeof(Cords));
+		santaArmy[i].pathStr = calloc(movesPerSanta, sizeof(char));
+	}
+	Neightbourhood hood = { .width=0, .height=0, .xOffset=0, .yOffset=0,
+		.mostDelivered={ .x=0, .y=0 }, .mostDeliveries=0, .numDeliveredHouses=0 };
 
+	// Data file loading
 	FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
     if (!fp) {
         perror("File opening failed");
-        free(santa.path);
         return -1;
     }
-	char pathStr[INPUT_DATA_CHARACTERS_NUM + 1];
-    if (!fgets(pathStr, INPUT_DATA_CHARACTERS_NUM+1, fp)) {
-        perror("File reading failed");
-        free(santa.path);
-        fclose(fp);
-        return -2;
+    int santaIndex = 0;
+    int pathIndex = 0;
+    for (int i = 0; i < INPUT_DATA_CHARACTERS_NUM; i++) {
+    	char pathChar = fgetc(fp);
+    	if (pathChar == EOF) {
+       		break;
+    	}
+    	santaArmy[santaIndex].pathStr[pathIndex] = pathChar;
+
+    	santaIndex++;
+    	if(santaIndex == NUM_SANTAS) {
+    		santaIndex = 0;
+    		pathIndex++;
+    	}
     }
     fclose(fp);
 
+    // Data parsing
 	Cords minCoords = { .x = 0, .y = 0 };
 	Cords maxCoords = { .x = 0, .y = 0 };
-	fillPath(&santa, pathStr, &minCoords, &maxCoords);
-	computeSantaStats(&santa, numMoves, minCoords, maxCoords);
-	printf("After %d moves presents have been delivered to %d houses and the house with the most"
+	for (int i = 0; i < NUM_SANTAS; i++) {
+		parsePath(&santaArmy[i], &minCoords, &maxCoords);
+	}
+
+	// Traversing
+	delimitNeightbourhoodArea(&hood, minCoords, maxCoords);
+	for (int i = 0; i < NUM_SANTAS; i++) {
+		traverseNeightbourhood(&hood, santaArmy[i].path, movesPerSanta);
+	}
+
+	// Computing result
+	computeNeightbourhoodStats(&hood);
+
+	// Pint result
+	printf("After %d moves by %d Santas presents have been delivered to %d houses and the house with the most"
 		   " deliveries is at [%d, %d] with %d deliveries\n",
-		   numMoves, santa.numDeliveredHouses, santa.mostDelivered.x, santa.mostDelivered.y, santa.mostDeliveries);
+		   movesPerSanta, NUM_SANTAS, hood.numDeliveredHouses, hood.mostDelivered.x,
+		   hood.mostDelivered.y, hood.mostDeliveries);
     
-    free(santa.path);
+    // Clean up
+	for (int i = 0; i < NUM_SANTAS; i++) {
+    	free(santaArmy[i].path);
+    	free(santaArmy[i].pathStr);
+	}
+	free(hood.deliveriesGrid);
 	return 0;
 }
