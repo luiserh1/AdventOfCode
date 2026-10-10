@@ -1,0 +1,6 @@
+*.exe
+*.log
+*.backup
+*.stackdump
+*.sublime-project
+*.sublime-workspace
