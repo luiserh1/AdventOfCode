@@ -1,0 +1,14 @@
+# OS
+.DS_Store
+
+# Build output
+*.out
+*.exe
+*.dSYM/
+
+# Puzzle inputs and examples (not to be shared publicly)
+input.txt
+data.txt
+test.txt
+example*.txt
+
