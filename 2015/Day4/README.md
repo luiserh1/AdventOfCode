@@ -14,3 +14,9 @@ The bold decision of trying to implement the MD5 algorithm from the pseudocode e
 4. I made a mistake when calculating the number of characters the counter would take when appended to the key. This mistake did not make the solution wrong, but it made each iteration slower than the previous one. It was a small mistake where I divided the counter by 10 once instead of counting how many times I had to divide it by 10 to get down to a single digit.
 
 Overall, a hard experience with a satisfying end. At least I have learnt some things, I hope.
+
+### Part B
+
+After all the suffering in Part A, this one was almost trivial: the puzzle only asks for six leading zeroes instead of five. I turned the target into a second program argument and that was it.
+
+Well, almost. While adapting the code I managed to delete the `free` for the string built on each iteration, so the program was quietly eating hundreds of megabytes. It still gave the right answer, which is exactly why I did not notice it myself.

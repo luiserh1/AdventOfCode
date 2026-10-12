@@ -150,8 +150,7 @@ void m5d_hex(const char* m5d, char* hex) {
 	hex[M5D_HEX_LENGTH] = '\0';
 }
 
-void day4a(const char* key) {
-	static const size_t targetLeadingZeros = 5;
+void solve(const char* key, size_t targetLeadingZeros) {
 	assert(targetLeadingZeros < M5D_HEX_LENGTH);
 	for (size_t counter = 1; counter < SIZE_MAX; counter++) {
 		size_t base10Digits = 1;
@@ -165,12 +164,14 @@ void day4a(const char* key) {
 		sprintf(counterString, "%zu", counter);
 
 
-		char* keyAndCounter = calloc(requiredChars, sizeof(char) * requiredChars);
+		char* keyAndCounter = calloc(requiredChars, sizeof(char));
 		memcpy(keyAndCounter, key, sizeof(char) * keyLength);
 		memcpy(keyAndCounter + keyLength, counterString, sizeof(char) * conunterChars);
 		
 		char m5dStr[M5D_LENGTH];
 		m5d(keyAndCounter, m5dStr);
+
+		free(keyAndCounter);
 
 		char hex[M5D_HEX_LENGTH + 1];
 	 	m5d_hex(m5dStr, hex);
@@ -197,15 +198,18 @@ void day4a(const char* key) {
 }
 
 int main(int argc, char *argv[]) {
-	if (argc != 2) {
-		printf("This program takes exactly 1 argument: the message");
+	if (argc != 3) {
+		printf("This program takes 2 mandatory arguments: the key"
+			" and the amount of leading zeroes target.\n");
 		return 1;
 	}
-	day4a(argv[1]);
+	size_t targetLeadingZeros;
+	if (sscanf (argv[2], "%zu", &targetLeadingZeros) != 1) {
+		printf("The second argument has to be a number.\n");
+    	return 2;
+	}
 
-	// char m5dStr[M5D_LENGTH];
-	// m5d(argv[1], m5dStr);
-	// print_m5d(m5dStr);
+	solve(argv[1], targetLeadingZeros);
 
 	return 0;
 }
