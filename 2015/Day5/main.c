@@ -13,12 +13,27 @@ typedef struct {
 	char str[MAX_CHARS_STRING + 1];
 } String;
 
-void clean_input(char *buffer) {
-    buffer[strcspn(buffer, "\n")] = '\0';
-}
-
 int is_vowel(char c) {
 	return c == 'a' || c =='e' || c == 'i' || c == 'o' || c == 'u';
+}
+
+#define NUM_BANNED_SUBSTRINGS 4
+
+static const char banned_substrings[NUM_BANNED_SUBSTRINGS][2] = {
+	{'a', 'b'},
+	{'c', 'd'},
+	{'p', 'q'},
+	{'x', 'y'}
+};
+
+static inline int is_banned(char prevC, char c) {
+	for (size_t i = 0; i < NUM_BANNED_SUBSTRINGS; i++) {
+		if (prevC == banned_substrings[i][0] &&
+			c     == banned_substrings[i][1]) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 int is_nice_string(const char* str) {
@@ -50,48 +65,21 @@ int is_nice_string(const char* str) {
 			}
 		}
 
-		if (prevC == 'a') {
-			if (c == 'b') {
-				bannedSubstrCond = 0;
-				//printf("%s contains a banned substring (ab)\n", str);
-				break;
-			}
+		if (is_banned(prevC, c)) {
+			bannedSubstrCond = 0;
+			//printf("%s contains a banned substring\n", str);
+			break;
 		}
-		else if (prevC == 'c') {
-			if (c == 'd') {
-				bannedSubstrCond = 0;
-				//printf("%s contains a banned substring (cd)\n", str);
-				break;
-			}
-		}
-		else if (prevC == 'p') {
-			if (c == 'q') {
-				bannedSubstrCond = 0;
-				//printf("%s contains a banned substring (pq)\n", str);
-				break;
-			}
-		}
-		else if (prevC == 'x') {
-			if (c == 'y') {
-				bannedSubstrCond = 0;
-				//printf("%s contains a banned substring (xy)\n", str);
-				break;
-			}
-		}
-
 
 		prevC = c;
 		c = str[++i];
 	}
 
 	int isNice = vowelCond && twiceInARowCond && bannedSubstrCond;
-	// if (isNice)
-	// 	printf("%s is NICE\n", str);
-	// else
-	// 	printf("%s is NAUGHTY\n", str);
 	return isNice;
 }
 
+// This program gets the data from the standard input
 int main(void) {
 	// is_nice_string("ugknbfddgicrmopn");
 	// is_nice_string("aaa");
@@ -100,22 +88,25 @@ int main(void) {
 	// is_nice_string("dvszwmarrgswjxmb");
 
 	String strings[NUM_STRINGS];
-	FILE* fp = fopen(INPUT_DATA_FILENAME, "r");
-    if (!fp) {
-        perror("File opening failed");
-        return -1;
-    }
-    for (int i = 0; i < NUM_STRINGS; i++) {
-    	char buffer[MAX_CHARS_STRING + 1];
-    	if (!fgets(buffer, MAX_CHARS_STRING + 2, fp)) {
-        	perror("File reading failed");
-   			fclose(fp);
-        	return -2;
-    	}
-    	clean_input(buffer);
-    	memcpy(strings[i].str, buffer, MAX_CHARS_STRING + 1);
-    }
-    fclose(fp);
+	char buffer[MAX_CHARS_STRING + 1];
+	int c;
+	size_t buffer_i = 0, strings_i = 0;
+	while ((c = fgetc(stdin)) != EOF) {
+		if (c == '\n') {
+			buffer[buffer_i] = '\0';
+			//printf("%s\n", buffer);
+			memcpy(strings[strings_i].str, buffer, MAX_CHARS_STRING + 1);
+			// When all the strings have the same length this is not necessary
+			// I am leaving it anyway
+			memset(buffer, '\0', MAX_CHARS_STRING + 1);
+			buffer_i = 0;
+			strings_i++;
+		}
+		else {
+			buffer[buffer_i] = c;
+			buffer_i++;
+		}
+	}
 
     size_t nice_count = 0;
     for (size_t i = 0; i < NUM_STRINGS; i++) {
