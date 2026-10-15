@@ -5,7 +5,6 @@
 
 #define VOWEL_TARGET 3
 
-#define INPUT_DATA_FILENAME "./data.txt"
 #define MAX_CHARS_STRING 16
 #define NUM_STRINGS 1000
 
