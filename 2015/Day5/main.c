@@ -107,6 +107,11 @@ int main(void) {
 			buffer_i++;
 		}
 	}
+	if (buffer_i > 0) {
+		buffer[buffer_i] = '\0';
+		//printf("%s\n", buffer);
+		memcpy(strings[strings_i].str, buffer, MAX_CHARS_STRING + 1);
+	}
 
     size_t nice_count = 0;
     for (size_t i = 0; i < NUM_STRINGS; i++) {
