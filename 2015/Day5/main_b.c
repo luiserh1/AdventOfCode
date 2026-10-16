@@ -7,11 +7,6 @@
 #define MAX_CHARS_STRING 16
 #define NUM_STRINGS 1000
 
-static inline uint8_t letter_to_index(char c) {
-	assert(c > '`' && c < '{');
-	return (uint8_t)'{' - (uint8_t)c;
-}
-
 typedef struct {
 	char str[MAX_CHARS_STRING + 1];
 } String;
@@ -27,6 +22,7 @@ typedef struct {
 	size_t capacity;
 } PairList;
 
+#ifdef MOCK_RUN
 void print_pair(const Pair* p) {
 	printf("[(%c, %c) at %zu] ", p->c1, p->c2, p->index);
 }
@@ -36,6 +32,7 @@ void print_pairs(const PairList* pairs) {
 		print_pair(&(pairs->list[i]));
 	printf("\n");
 }
+#endif
 
 int compare_pairs(const void *a, const void *b) {
 	const Pair *p = a;
@@ -105,9 +102,6 @@ int is_nice_string(const char* str) {
 
 	PairList pairs;
 	init_pair_list(&pairs);
-	uint8_t* charAppearances = calloc('z' - 'a', sizeof(uint8_t));
-	charAppearances[letter_to_index(c1)]++;
-	charAppearances[letter_to_index(c2)]++;
 
 	size_t i = 2;
 	while (c3 != '\0') {
@@ -118,7 +112,6 @@ int is_nice_string(const char* str) {
 		}
 
 		append_pair(c1, c2, &pairs);
-		charAppearances[letter_to_index(c3)]++;
 
 		c1 = c2;
 		c2 = c3;
@@ -127,59 +120,49 @@ int is_nice_string(const char* str) {
 	append_pair(c1, c2, &pairs);
 
 	qsort(pairs.list, pairs.length, sizeof(Pair), compare_pairs);
+#ifdef MOCK_RUN
 	printf("Pairs of %s:\n", str);
 	print_pairs(&pairs);
-	for (char c = 'a'; c < '{'; c++)
-		printf("%c[%u] ", c, charAppearances[letter_to_index(c)]);
-	printf("\n");
+#endif
 	Pair* p1 = &(pairs.list[0]);
 	Pair* p2 = &(pairs.list[1]);
 	for (size_t i = 2; i < pairs.length; i++) {
-		print_pair(p1);
-		printf("and ");
-		print_pair(p2);
 		if (equal_pairs(p1, p2)) {
-			printf("are equals and");
-			if (!do_overlap(p1, p2))
-			{
-				printf(" not overlap. Their characters appear (%u) and (%u) times."
-					" So they ", charAppearances[letter_to_index(p1->c1)],
-					charAppearances[letter_to_index(p1->c2)]);
-				if (charAppearances[letter_to_index(p1->c1)] > 1 &&
-					charAppearances[letter_to_index(p1->c2)] > 1) {
-					pairCond = 1;
-					printf("MEET the condition\n");
-					break;
-				}
+			if (!do_overlap(p1, p2)) {
+				pairCond = 1;
+				break;
 			}
-			else {
-				printf(" do overlap, so they ");
-			}
+		} else {
+			p1 = p2;
 		}
-		printf("do NOT meet the condition\n");
 
-		p1 = p2;
 		p2 = &(pairs.list[i]);
 	}
+	if (equal_pairs(p1, p2) && !do_overlap(p1, p2))
+		pairCond = 1;
 
 	free_pair_list(&pairs);
-	free(charAppearances);
 
 	int isNice = pairCond && sandwitchLetterCond;
+#ifdef MOCK_RUN
 	if (isNice)
 		printf("%s is NICE\n", str);
 	else
 		printf("%s is NAUGHTY\n", str);
+#endif
 	return isNice;
 }
 
 // This program gets the data from the standard input
 int main(void) {
-	// is_nice_string("qjhvhtzxzqqjkmpb");
-	// is_nice_string("xxyxx");
-	// is_nice_string("uurcxstgmygtbstg");
-	// is_nice_string("ieodomkazucvgmuy");
+#ifdef MOCK_RUN
+	is_nice_string("qjhvhtzxzqqjkmpb");
+	is_nice_string("xxyxx");
+	is_nice_string("uurcxstgmygtbstg");
+	is_nice_string("ieodomkazucvgmuy");
+#endif 
 
+#ifndef MOCK_RUN
 	String strings[NUM_STRINGS];
 	char buffer[MAX_CHARS_STRING + 1];
 	int c;
@@ -213,4 +196,5 @@ int main(void) {
     }
 
 	printf("Solution: [%zu] nice strings.\n", nice_count);
+#endif
 }
